@@ -8,8 +8,10 @@ import java.util.UUID;
 
 import javax.crypto.SecretKey;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.Authentication;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -75,5 +77,15 @@ public class JwtService {
 
     private boolean isTokenExpired(Claims claims) {
         return claims.getExpiration().before(new Date());
+    }
+    
+    public Claims extractAllClaimsFromContext() {
+    	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated() || auth.getCredentials() == null) {
+            return null;
+        }
+
+        String jwtToken = auth.getCredentials().toString();
+        return extractAllClaims(jwtToken);
     }
 }
