@@ -1,8 +1,11 @@
 package com.chess.controller;
 
+import java.util.HashMap;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,9 +28,8 @@ public class CreateRoom {
 	@Autowired
 	private JwtService jwtService;
 	
-	@PostMapping(RestURLs.GAME_CREATE)
-	public ResponseEntity<?> createGame(@RequestBody GameCreateDto req) {
-		System.out.println("Hi");
+	@GetMapping(RestURLs.GAME_CREATE)
+	public ResponseEntity<?> createGame() {
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		String jwt = SecurityContextHolder.getContext().getAuthentication().toString();
 		System.out.println(username);
@@ -35,10 +37,11 @@ public class CreateRoom {
 
 	    Claims claims = jwtService.extractAllClaimsFromContext();
 	    String userId = claims.getSubject();
+	    
+	    String roomId = roomIdGeneratorService.generateUniqueId();
 
-	    System.out.println("Username: " + username);
-	    System.out.println("User UUID: " + userId);
-
-	    return ResponseEntity.ok("Room created for " + username); 
+	    HashMap<String, String> response = new HashMap<>();
+	    response.put("roomId", roomId);
+	    return ResponseEntity.ok(response); 
 	}
 }

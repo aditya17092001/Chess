@@ -35,7 +35,8 @@ public class SecurityConfig {
 		return http
 				.csrf(customizer -> customizer.disable())
 				.authorizeHttpRequests(req -> req
-						.requestMatchers("api/v1/signup", "api/v1/signin").permitAll()
+						.requestMatchers("/ws/**").permitAll()
+						.requestMatchers("/api/v1/signup", "/api/v1/signin").permitAll()
 						.anyRequest().authenticated())
 				.httpBasic(Customizer.withDefaults())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
